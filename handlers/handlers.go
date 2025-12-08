@@ -19,15 +19,16 @@ import (
 )
 
 type Handler struct {
-	DB      *db.Database
-	IdField string
+	DB        *db.Database
+	IdField   string
+	NoPersist bool
 }
 
-func New(d *db.Database, idField string) *Handler {
+func New(d *db.Database, idField string, noPersist bool) *Handler {
 	if idField == "" {
 		idField = "id"
 	}
-	return &Handler{DB: d, IdField: idField}
+	return &Handler{DB: d, IdField: idField, NoPersist: noPersist}
 }
 
 // --- Plural Routes ---
@@ -118,7 +119,9 @@ func (h *Handler) PluralCreate(w http.ResponseWriter, r *http.Request, resourceN
 	}
 
 	h.DB.Data[resourceName] = append(h.DB.Data[resourceName].([]interface{}), newItem)
-	h.DB.Save()
+	if !h.NoPersist {
+		h.DB.Save()
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -147,7 +150,9 @@ func (h *Handler) PluralUpdate(w http.ResponseWriter, r *http.Request, resourceN
 	updates[h.IdField] = id // Ensure ID is preserved/set
 	list[idx] = updates
 	h.DB.Data[resourceName] = list
-	h.DB.Save()
+	if !h.NoPersist {
+		h.DB.Save()
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updates)
@@ -180,7 +185,9 @@ func (h *Handler) PluralPatch(w http.ResponseWriter, r *http.Request, resourceNa
 
 	list[idx] = currentItem
 	h.DB.Data[resourceName] = list
-	h.DB.Save()
+	if !h.NoPersist {
+		h.DB.Save()
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(currentItem)
@@ -200,7 +207,9 @@ func (h *Handler) PluralDelete(w http.ResponseWriter, r *http.Request, resourceN
 
 	// Remove from slice
 	h.DB.Data[resourceName] = append(list[:idx], list[idx+1:]...)
-	h.DB.Save()
+	if !h.NoPersist {
+		h.DB.Save()
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("{}"))
@@ -241,7 +250,9 @@ func (h *Handler) SingularUpdate(w http.ResponseWriter, r *http.Request, resourc
 			h.DB.Set(resourceName, currentMap)
 		}
 	}
-	h.DB.Save()
+	if !h.NoPersist {
+		h.DB.Save()
+	}
 
 	newData, _ := h.DB.Get(resourceName)
 	w.Header().Set("Content-Type", "application/json")

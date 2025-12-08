@@ -296,6 +296,7 @@ Options:
   --static, -s       Set static files directory
   --read-only, -ro   Allow only GET requests                           [boolean]
   --no-cors, -nc     Disable Cross-Origin Resource Sharing             [boolean]
+  --no-persist, -np  Disable file writes                               [boolean]
   --delay, -d        Add delay to responses (ms)
   --id, -i           Set database id property (e.g. _id)         [default: "id"]
   --quiet, -q        Suppress log messages from output                 [boolean]
@@ -305,6 +306,11 @@ Options:
 Examples:
   json-server db.json
   json-server db.json --quiet # Disable access logs
+
+Note on `--no-persist` vs `--read-only`:
+
+- `--no-persist` (alias `-np`): The server will accept mutating requests (POST/PUT/PATCH/DELETE) and update the in-memory state, but **will not write any changes to the source file on disk**. This is useful for testing/mocking behavior without changing your original `db.json`.
+- `--read-only` (alias `-ro`): The server only allows GET requests and returns 403 for other methods — `--read-only` prevents any mutation entirely.
 ```
 
 ## Feature Comparison: Node.js vs Go Port

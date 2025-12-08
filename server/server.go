@@ -28,6 +28,7 @@ type Config struct {
 	Routes    string
 	IdField   string
 	Quiet     bool
+	NoPersist bool
 }
 
 type Server struct {
@@ -47,7 +48,7 @@ func New(d *db.Database, config *Config) *Server {
 
 	return &Server{
 		DB:       d,
-		Handler:  handlers.New(d, config.IdField),
+		Handler:  handlers.New(d, config.IdField, config.NoPersist),
 		Router:   mux.NewRouter(),
 		Config:   config,
 		Rewriter: rewriter,
