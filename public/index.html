@@ -1,85 +1,527 @@
-<html>
-  <head>
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.2/css/all.css"
-      integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="style.css" />
-    <title>JSON Server</title>
-  </head>
+<!DOCTYPE html>
+<html lang="en">
 
-  <body>
-    <header>
-      <div class="container">
-        <nav>
-          <ul>
-            <li class="title">
-              JSON Server
-            </li>
-            <li>
-              <a href="https://github.com/users/typicode/sponsorship">
-                <i class="fas fa-heart"></i>GitHub Sponsors
-              </a>
-            </li>
-            <li>
-              <a href="https://my-json-server.typicode.com">
-                <i class="fas fa-burn"></i>My JSON Server
-              </a>
-            </li>
-            <li>
-              <a href="https://thanks.typicode.com">
-                <i class="far fa-laugh"></i>Supporters
-              </a>
-            </li>
-          </ul>
-        </nav>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Server Sample</title>
+  <style>
+    :root {
+      --bg: #e9ecef;
+      --surface: #fff;
+      --text: #333;
+      --muted: #6c757d;
+      --primary: #007bff;
+      --primary-dark: #0056b3;
+      --danger: #dc3545;
+      --danger-dark: #bd2130;
+      --warn: #ffc107;
+      --warn-dark: #e0a800;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --border: #f5f5f5;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .card {
+      background-color: var(--surface);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #2c3e50;
+    }
+
+    #profile-name {
+      font-weight: bold;
+      color: #555;
+      background-color: #f8f9fa;
+      padding: 5px 10px;
+      border-radius: 20px;
+    }
+
+    .text-muted {
+      color: var(--muted);
+    }
+
+    .text-sm {
+      font-size: 0.9rem;
+    }
+
+    .mt-0 {
+      margin-top: 0;
+    }
+
+    .add-post-form {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.5fr) minmax(120px, 0.6fr) auto;
+      gap: 10px 15px;
+      align-items: end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .field label {
+      font-size: 0.85rem;
+      color: #495057;
+      margin-bottom: 4px;
+    }
+
+    .post {
+      border-bottom: 1px solid #eee;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+
+    .post:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .post-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0;
+      color: var(--primary);
+    }
+
+    .post-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+
+    .comments-section {
+      margin-left: 20px;
+      padding-left: 15px;
+      border-left: 3px solid #e9ecef;
+      margin-top: 15px;
+    }
+
+    .comment {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .comment-text {
+      flex-grow: 1;
+      margin-right: 10px;
+    }
+
+    .comment-separated {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    button {
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      font-size: 0.9rem;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-dark);
+    }
+
+    .btn-warning {
+      background-color: var(--warn);
+      color: #212529;
+    }
+
+    .btn-warning:hover {
+      background-color: var(--warn-dark);
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+    }
+
+    .input {
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      margin-right: 5px;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: #80bdff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    }
+
+    .grow {
+      flex-grow: 1;
+    }
+
+    .input-narrow {
+      width: 80px;
+    }
+
+    .form-inline {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .post-edit {
+      margin-bottom: 10px;
+    }
+
+    .comment-form {
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      .add-post-form {
+        grid-template-columns: 1fr;
+      }
+
+      .add-post-form button {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .input-narrow {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="card">
+    <h1>JSON Server Sample</h1>
+    <div id="profile-name">Loading...</div>
+  </header>
+
+  <section class="card">
+    <h3>Add New Post</h3>
+    <p class="text-muted text-sm mt-0">
+      Create a new post by entering a title and initial view count.
+    </p>
+
+    <form class="add-post-form" onsubmit="event.preventDefault(); addPost();">
+      <div class="field">
+        <label for="new-post-title">Title</label>
+        <input type="text" id="new-post-title" class="input" placeholder="e.g. Hello JSON Server">
       </div>
-    </header>
-    <main>
-      <div class="container">
-        <h1>Congrats!</h1>
-        <p>
-          You're successfully running JSON Server
-          <br />
-          ✧*｡٩(ˊᗜˋ*)و✧*｡
-        </p>
 
-        <div id="resources"></div>
-
-        <p>
-          To access and modify resources, you can use any HTTP method:
-        </p>
-        <p>
-          <code>GET</code>
-          <code>POST</code>
-          <code>PUT</code>
-          <code>PATCH</code>
-          <code>DELETE</code>
-          <code>OPTIONS</code>
-        </p>
-
-        <div id="custom-routes"></div>
-
-        <h1>Documentation</h1>
-        <p>
-          <a href="https://github.com/typicode/json-server">
-            README
-          </a>
-        </p>
+      <div class="field">
+        <label for="new-post-views">Views</label>
+        <input type="number" id="new-post-views" class="input input-narrow" placeholder="0" value="0" min="0">
       </div>
-    </main>
 
-    <footer>
-      <div class="container">
-        <p>
-          To replace this page, create a
-          <code>./public/index.html</code> file.
-        </p>
+      <div>
+        <button type="submit" class="btn-primary">Add Post</button>
       </div>
-    </footer>
+    </form>
+  </section>
 
-    <script src="script.js"></script>
-  </body>
+  <section id="posts-container" class="card">
+    <!-- Posts will be loaded here -->
+    <p>Loading posts...</p>
+  </section>
+
+  <script>
+    const API_BASE = '';
+    const byId = id => document.getElementById(id);
+    const request = (path, options) => fetch(`${API_BASE}${path}`, options);
+    const toJson = res => res.json();
+    const toggleHidden = (element, show) => {
+      if (element) {
+        element.classList[show ? 'remove' : 'add']('hidden');
+      }
+    };
+
+    async function fetchProfile() {
+      try {
+        const data = await request('/profile').then(toJson);
+        byId('profile-name').textContent = `Name: ${data.name || 'Unknown'}`;
+      } catch (e) {
+        console.error('Error fetching profile:', e);
+        byId('profile-name').textContent = 'Error';
+      }
+    }
+
+    async function fetchPostsAndComments() {
+      try {
+        const [posts, comments] = await Promise.all([
+          request('/posts').then(toJson),
+          request('/comments').then(toJson)
+        ]);
+        renderPosts(posts, comments);
+      } catch (e) {
+        console.error('Error fetching data:', e);
+        byId('posts-container').innerHTML = '<p>Error loading data.</p>';
+      }
+    }
+
+    function renderPosts(posts, comments) {
+      const container = byId('posts-container');
+      container.innerHTML = '';
+
+      if (posts.length === 0) {
+        container.innerHTML = '<p>No posts found.</p>';
+        return;
+      }
+
+      posts.forEach(post => {
+        const postComments = comments.filter(c => String(c.postId) === String(post.id));
+        const postEl = document.createElement('div');
+        postEl.className = 'post';
+        postEl.innerHTML = `
+          <div class="post-header">
+            <div id="display-${post.id}">
+              <h4 class="post-title" id="title-${post.id}">${escapeHtml(post.title)}</h4>
+              <div class="post-meta">Views: <span id="views-${post.id}">${post.views}</span></div>
+            </div>
+            <div class="post-actions">
+              <button onclick="showEditPost('${post.id}', '${escapeHtml(post.title)}', ${post.views})" class="btn-warning btn-sm">Edit</button>
+              <button onclick="deletePost('${post.id}')" class="btn-danger btn-sm">Delete</button>
+            </div>
+          </div>
+
+          <div id="edit-form-${post.id}" class="hidden form-inline post-edit">
+            <input type="text" id="edit-title-${post.id}" class="input grow" placeholder="Title">
+            <input type="number" id="edit-views-${post.id}" class="input input-narrow" min="0">
+            <button onclick="updatePost('${post.id}')" class="btn-primary btn-sm">Save</button>
+            <button onclick="cancelEditPost('${post.id}')" class="btn-sm">Cancel</button>
+          </div>
+
+          <div class="comments-section">
+            <h5>Comments</h5>
+            <div id="comments-list-${post.id}">
+              ${postComments.map(comment => renderCommentHtml(comment)).join('')}
+            </div>
+            <div class="form-inline comment-form">
+              <input type="text" id="new-comment-${post.id}" class="input grow" placeholder="Add a comment...">
+              <button onclick="addComment('${post.id}')" class="btn-primary btn-sm">Add</button>
+            </div>
+          </div>
+        `;
+        container.appendChild(postEl);
+      });
+    }
+
+    function renderCommentHtml(comment) {
+      return `
+        <div class="comment" id="comment-${comment.id}">
+          <span class="comment-text" id="comment-text-${comment.id}">${escapeHtml(comment.text)}</span>
+          <div class="comment-actions">
+            <button onclick="showEditComment('${comment.id}', '${escapeHtml(comment.text)}')" class="btn-warning btn-sm">Edit</button>
+            <button onclick="deleteComment('${comment.id}')" class="btn-danger btn-sm">Delete</button>
+          </div>
+        </div>
+        <div id="edit-comment-form-${comment.id}" class="hidden form-inline comment-separated">
+          <input type="text" id="edit-comment-input-${comment.id}" class="input grow">
+          <button onclick="updateComment('${comment.id}')" class="btn-primary btn-sm">Save</button>
+          <button onclick="cancelEditComment('${comment.id}')" class="btn-sm">Cancel</button>
+        </div>
+      `;
+    }
+
+    async function addPost() {
+      const titleInput = byId('new-post-title');
+      const viewsInput = byId('new-post-views');
+      const title = titleInput.value.trim();
+      const views = parseInt(viewsInput.value, 10) || 0;
+
+      if (!title) return alert('Title is required');
+
+      try {
+        await request('/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, views })
+        });
+        titleInput.value = '';
+        viewsInput.value = 0;
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error adding post:', e);
+        alert('Failed to add post');
+      }
+    }
+
+    async function deletePost(id) {
+      if (!confirm('Are you sure?')) return;
+      try {
+        await request(`/posts/${id}`, { method: 'DELETE' });
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error deleting post:', e);
+        alert('Failed to delete post');
+      }
+    }
+
+    function showEditPost(id, title, views) {
+      byId(`edit-title-${id}`).value = title;
+      byId(`edit-views-${id}`).value = views;
+      togglePostEdit(id, true);
+    }
+
+    function cancelEditPost(id) {
+      togglePostEdit(id, false);
+    }
+
+    function togglePostEdit(id, editing) {
+      toggleHidden(byId(`edit-form-${id}`), editing);
+      toggleHidden(byId(`display-${id}`), !editing);
+    }
+
+    async function updatePost(id) {
+      const title = byId(`edit-title-${id}`).value.trim();
+      const views = parseInt(byId(`edit-views-${id}`).value, 10) || 0;
+
+      if (!title) return alert('Title is required');
+
+      try {
+        await request(`/posts/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, title, views })
+        });
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error updating post:', e);
+        alert('Failed to update post');
+      }
+    }
+
+    async function addComment(postId) {
+      const input = byId(`new-comment-${postId}`);
+      const text = input.value.trim();
+
+      if (!text) return alert('Comment text is required');
+
+      try {
+        await request('/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId, text })
+        });
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error adding comment:', e);
+        alert('Failed to add comment');
+      }
+    }
+
+    async function deleteComment(id) {
+      if (!confirm('Are you sure?')) return;
+      try {
+        await request(`/comments/${id}`, { method: 'DELETE' });
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error deleting comment:', e);
+        alert('Failed to delete comment');
+      }
+    }
+
+    function showEditComment(id, text) {
+      byId(`edit-comment-input-${id}`).value = text;
+      toggleCommentEdit(id, true);
+    }
+
+    function cancelEditComment(id) {
+      toggleCommentEdit(id, false);
+    }
+
+    function toggleCommentEdit(id, editing) {
+      toggleHidden(byId(`edit-comment-form-${id}`), editing);
+      toggleHidden(byId(`comment-${id}`), !editing);
+    }
+
+    async function updateComment(id) {
+      const text = byId(`edit-comment-input-${id}`).value.trim();
+      if (!text) return alert('Comment text is required');
+
+      try {
+        await request(`/comments/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        fetchPostsAndComments();
+      } catch (e) {
+        console.error('Error updating comment:', e);
+        alert('Failed to update comment');
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    fetchProfile();
+    fetchPostsAndComments();
+  </script>
+</body>
+
 </html>

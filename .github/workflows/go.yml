@@ -1,0 +1,31 @@
+name: Go
+
+on:
+  push:
+    branches: [ "master", "main", "develop" ]
+  pull_request:
+    branches: [ "master", "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
+        # Use setup-go's built-in cache for modules and build cache
+        cache: true
+        cache-dependency-path: go.sum
+
+    # Note: Cache is restored by setup-go; avoid manual deletion
+    # or re-extraction of GOMODCACHE/GOCACHE to prevent collisions.
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...

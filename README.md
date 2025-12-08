@@ -1,73 +1,10 @@
-# JSON Server [![Node.js CI](https://github.com/typicode/json-server/actions/workflows/node.js.yml/badge.svg?branch=master)](https://github.com/typicode/json-server/actions/workflows/node.js.yml)
+# JSON Server Go [![Go](https://github.com/yukkes/json-server-go/actions/workflows/go.yml/badge.svg)](https://github.com/yukkes/json-server-go/actions/workflows/go.yml)
+
+> **Note**: This is a Go port of the original [json-server](https://github.com/typicode/json-server). It aims to be a drop-in replacement with a single binary distribution.
 
 Get a full fake REST API with __zero coding__ in __less than 30 seconds__ (seriously)
 
-Created with <3 for front-end developers who need a quick back-end for prototyping and mocking.
-
-* [Egghead.io free video tutorial - Creating demo APIs with json-server](https://egghead.io/lessons/nodejs-creating-demo-apis-with-json-server)
-* [JSONPlaceholder - Live running version](https://jsonplaceholder.typicode.com)
-* [__My JSON Server__ - no installation required, use your own data](https://my-json-server.typicode.com)
-
-See also:
-* :dog: [husky - Git hooks made easy](https://github.com/typicode/husky)
-* :owl: [lowdb - local JSON database](https://github.com/typicode/lowdb)
-* :x: :heavy_check_mark: [xv - the most minimalist test runner](https://github.com/typicode/xv)
-
-<p>&nbsp;</p>
-
-<h2 align="center">Gold sponsors 🥇</h2>
-
-<p>&nbsp;</p>
-
-<p align="center">
-  <a href="https://tryretool.com/?utm_source=sponsor&utm_campaign=typicode" target="_blank">
-    <img src="https://i.imgur.com/IBItATn.png" height="70px">
-  </a>
-</p>
-
-<p>&nbsp;</p>
-
-<p align="center">
-  <a href="https://mockend.com/" target="_blank">
-    <img src="https://jsonplaceholder.typicode.com/mockend.svg" height="70px">
-  </a>
-</p>
-
-<p>&nbsp;</p>
-
-<p align="center">
-  <a href="https://www.deta.sh/?ref=typicode" target="_blank">
-    <img src="https://jsonplaceholder.typicode.com/deta.svg" height="70px">
-  </a>
-</p>
-
-<p>&nbsp;</p>
-
-<p align="center">
-  <a href="https://uibakery.io/?utm_source=json_server&utm_medium=sponsor&utm_campaign=github" target="_blank">
-    <img src="https://jsonplaceholder.typicode.com/ui_bakery.jpg" height="70px">
-  </a>
-</p>
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
-
----
-
-From generating an API to importing a CSV into postgres, Retool’s range of 20+ developer utilities is a go-to resource when building apps. [Check it out now](https://retool.com/utilities/)
-
----
-
-<p>&nbsp;</p>
-
-<p>&nbsp;</p>
-
-[Become a sponsor and have your company logo here](https://github.com/users/typicode/sponsorship)
-
-## Sponsor
-
-__Please help me build OSS__ 👉 [GitHub Sponsors](https://github.com/sponsors/typicode) :heart:
+Created for front-end developers who need a quick back-end for prototyping and mocking.
 
 ## Table of contents
 
@@ -90,36 +27,24 @@ __Please help me build OSS__ 👉 [GitHub Sponsors](https://github.com/sponsors/
   * [Static file server](#static-file-server)
   * [Alternative port](#alternative-port)
   * [Access from anywhere](#access-from-anywhere)
-  * [Remote schema](#remote-schema)
-  * [Generate random data](#generate-random-data)
-  * [HTTPS](#https)
   * [Add custom routes](#add-custom-routes)
-  * [Add middlewares](#add-middlewares)
   * [CLI usage](#cli-usage)
-  * [Module](#module)
-    + [Simple example](#simple-example)
-    + [Custom routes example](#custom-routes-example)
-    + [Access control example](#access-control-example)
-    + [Custom output example](#custom-output-example)
-    + [Rewriter example](#rewriter-example)
-    + [Mounting JSON Server on another endpoint example](#mounting-json-server-on-another-endpoint-example)
-    + [API](#api)
-  * [Deployment](#deployment)
-- [Links](#links)
-  * [Video](#video)
-  * [Articles](#articles)
-  * [Third-party tools](#third-party-tools)
+- [Performance Comparison](#performance-comparison)
 - [License](#license)
 
 <!-- tocstop -->
 
 ## Getting started
 
-Install JSON Server 
+### Installation
 
+```bash
+git clone https://github.com/yukkes/json-server-go.git
+cd json-server-go
+go build -o json-server main.go
 ```
-npm install -g json-server
-```
+
+### Usage
 
 Create a `db.json` file with some data
 
@@ -138,7 +63,13 @@ Create a `db.json` file with some data
 Start JSON Server
 
 ```bash
-json-server --watch db.json
+./json-server db.json
+```
+
+Or with watch mode:
+
+```bash
+./json-server --watch db.json
 ```
 
 Now if you go to [http://localhost:3000/posts/1](http://localhost:3000/posts/1), you'll get
@@ -149,10 +80,10 @@ Now if you go to [http://localhost:3000/posts/1](http://localhost:3000/posts/1),
 
 Also when doing requests, it's good to know that:
 
-- If you make POST, PUT, PATCH or DELETE requests, changes will be automatically and safely saved to `db.json` using [lowdb](https://github.com/typicode/lowdb).
+- If you make POST, PUT, PATCH or DELETE requests, changes will be automatically and safely saved to `db.json`.
 - Your request body JSON should be object enclosed, just like the GET output. (for example `{"name": "Foobar"}`)
 - Id values are not mutable. Any `id` value in the body of your PUT or PATCH request will be ignored. Only a value set in a POST request will be respected, but only if not already taken.
-- A POST, PUT or PATCH request should include a `Content-Type: application/json` header to use the JSON in the request body. Otherwise it will return a 2XX status code, but without changes being made to the data. 
+- A POST, PUT or PATCH request should include a `Content-Type: application/json` header to use the JSON in the request body. Otherwise it will return a 2XX status code, but without changes being made to the data.
 
 ## Routes
 
@@ -323,41 +254,6 @@ $ json-server --watch db.json --port 3004
 
 You can access your fake API from anywhere using CORS and JSONP.
 
-### Remote schema
-
-You can load remote schemas.
-
-```bash
-$ json-server http://example.com/file.json
-$ json-server http://jsonplaceholder.typicode.com/db
-```
-
-### Generate random data
-
-Using JS instead of a JSON file, you can create data programmatically.
-
-```javascript
-// index.js
-module.exports = () => {
-  const data = { users: [] }
-  // Create 1000 users
-  for (let i = 0; i < 1000; i++) {
-    data.users.push({ id: i, name: `user${i}` })
-  }
-  return data
-}
-```
-
-```bash
-$ json-server index.js
-```
-
-__Tip__ use modules like [Faker](https://github.com/Marak/faker.js), [Casual](https://github.com/boo1ean/casual), [Chance](https://github.com/victorquinn/chancejs) or [JSON Schema Faker](https://github.com/json-schema-faker/json-schema-faker).
-
-### HTTPS
-
-There are many ways to set up SSL in development. One simple way is to use [hotel](https://github.com/typicode/hotel).
-
 ### Add custom routes
 
 Create a `routes.json` file. Pay attention to start every route with `/`.
@@ -387,255 +283,103 @@ Now you can access resources using additional routes.
 /articles?id=1 # → /posts/1
 ```
 
-### Add middlewares
-
-You can add your middlewares from the CLI using `--middlewares` option:
-
-```js
-// hello.js
-module.exports = (req, res, next) => {
-  res.header('X-Hello', 'World')
-  next()
-}
-```
-
-```bash
-json-server db.json --middlewares ./hello.js
-json-server db.json --middlewares ./first.js ./second.js
-```
-
 ### CLI usage
 
 ```
 json-server [options] <source>
 
 Options:
-  --config, -c       Path to config file           [default: "json-server.json"]
   --port, -p         Set port                                    [default: 3000]
   --host, -H         Set host                             [default: "localhost"]
   --watch, -w        Watch file(s)                                     [boolean]
   --routes, -r       Path to routes file
-  --middlewares, -m  Paths to middleware files                           [array]
   --static, -s       Set static files directory
-  --read-only, --ro  Allow only GET requests                           [boolean]
-  --no-cors, --nc    Disable Cross-Origin Resource Sharing             [boolean]
-  --no-gzip, --ng    Disable GZIP Content-Encoding                     [boolean]
-  --snapshots, -S    Set snapshots directory                      [default: "."]
+  --read-only, -ro   Allow only GET requests                           [boolean]
+  --no-cors, -nc     Disable Cross-Origin Resource Sharing             [boolean]
   --delay, -d        Add delay to responses (ms)
   --id, -i           Set database id property (e.g. _id)         [default: "id"]
-  --foreignKeySuffix, --fks  Set foreign key suffix, (e.g. _id as in post_id)
-                                                                 [default: "Id"]
   --quiet, -q        Suppress log messages from output                 [boolean]
   --help, -h         Show help                                         [boolean]
   --version, -v      Show version number                               [boolean]
 
 Examples:
   json-server db.json
-  json-server file.js
-  json-server http://example.com/db.json
-
-https://github.com/typicode/json-server
+  json-server db.json --quiet # Disable access logs
 ```
 
-You can also set options in a `json-server.json` configuration file.
+## Feature Comparison: Node.js vs Go Port
 
-```json
-{
-  "port": 3000
-}
-```
+This section outlines the feature differences between the original Node.js `json-server` and this Go port.
 
-### Module
+### Feature Comparison Table
 
-If you need to add authentication, validation, or __any behavior__, you can use the project as a module in combination with other Express middlewares.
+| Feature Category | Feature | Node.js (Original) | Go Port | Notes |
+| :--- | :--- | :---: | :---: | :--- |
+| **CLI Options** | Port / Host | ✅ | ✅ | |
+| | Watch Mode (`--watch`) | ✅ | ✅ | |
+| | Custom Routes (`--routes`) | ✅ | ✅ | |
+| | Middlewares (`--middlewares`) | ✅ | ❌ | JS specific. |
+| | Static Files (`--static`) | ✅ | ✅ | |
+| | Read Only (`--read-only`) | ✅ | ✅ | |
+| | No CORS (`--no-cors`) | ✅ | ✅ | |
+| | Delay (`--delay`) | ✅ | ✅ | |
+| | ID Property (`--id`) | ✅ | ✅ | |
+| **Routes** | Plural Routes (CRUD) | ✅ | ✅ | |
+| | Singular Routes | ✅ | ✅ | |
+| | Nested Routes (e.g. `/posts/1/comments`) | ✅ | ✅ | |
+| | Database Route (`/db`) | ✅ | ✅ | |
+| **Filtering** | Simple Equality | ✅ | ✅ | |
+| | Deep Properties (e.g. `author.name`) | ✅ | ✅ | |
+| | Operators (`_gte`, `_lte`, `_ne`, `_like`) | ✅ | ✅ | |
+| **Pagination** | `_page`, `_limit` | ✅ | ✅ | |
+| | Link Headers | ✅ | ✅ | |
+| **Sorting** | `_sort`, `_order` | ✅ | ✅ | |
+| | Multiple Fields Sorting | ✅ | ✅ | |
+| **Slice** | `_start`, `_end`, `_limit` | ✅ | ✅ | |
+| | `X-Total-Count` Header | ✅ | ✅ | |
+| **Search** | Full-text search (`q`) | ✅ | ✅ | |
+| **Relationships** | `_embed` (Children) | ✅ | ✅ | |
+| | `_expand` (Parent) | ✅ | ✅ | |
+| **Data Source** | JSON File | ✅ | ✅ | |
+| | JS File (Random Data) | ✅ | ❌ | JS specific. |
+| | Remote URL | ✅ | ❌ | |
 
-#### Simple example
+### Detailed Missing Features in Go Port
 
-```sh
-$ npm install json-server --save-dev
-```
+#### 1. CLI Configuration & Customization
+Some CLI flags are not yet implemented or are specific to the Node.js ecosystem:
+- **`--middlewares`:** Cannot load external middleware scripts (Node.js specific).
 
-```js
-// server.js
-const jsonServer = require('json-server')
-const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
+#### 2. Data Generation
+The Go port only accepts a JSON file as input. It cannot execute a JavaScript file to generate data programmatically, nor can it load data from a remote URL.
 
-server.use(middlewares)
-server.use(router)
-server.listen(3000, () => {
-  console.log('JSON Server is running')
-})
-```
+#### 3. ID Generation
+The Go port now supports smart ID generation matching Node.js behavior:
+- If the collection is empty, it returns `1`.
+- If the collection has items with numeric IDs, it finds the max ID and increments it.
+- Otherwise (string IDs), it generates a random 7-character string ID (NanoID style).
 
-```sh
-$ node server.js
-```
+## Performance Comparison
 
-The path you provide to the `jsonServer.router` function  is relative to the directory from where you launch your node process. If you run the above code from another directory, it’s better to use an absolute path:
+This section provides a performance comparison between the original Node.js json-server and this Go port, based on ApacheBench (ab) tests.
 
-```js
-const path = require('path')
-const router = jsonServer.router(path.join(__dirname, 'db.json'))
-```
+**Test Environment:**
+- CPU: AMD Ryzen AI 7 350
+- Test Command: `ab -n 10000 -c 10 http://localhost:3000/posts`
+- Endpoint: `/posts`
+- Requests: 10,000
+- Concurrency: 10
 
-For an in-memory database, simply pass an object to `jsonServer.router()`.
+**Performance Results:**
 
-Please note also that `jsonServer.router()` can be used in existing Express projects.
+| Version                  | Requests per second | Time per request (ms) | Notes                  |
+|--------------------------|---------------------|-----------------------|------------------------|
+| Original (Node.js)       | 1642.89            | 6.09                 | Access logging enabled |
+| Go Port (with logging)   | 14494.62           | 0.69                 | Access logging enabled |
+| Go Port (without logging)| 22552.47           | 0.44                 | Access logging disabled |
 
-#### Custom routes example
-
-Let's say you want a route that echoes query parameters and another one that set a timestamp on every resource created.
-
-```js
-const jsonServer = require('json-server')
-const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
-
-// Set default middlewares (logger, static, cors and no-cache)
-server.use(middlewares)
-
-// Add custom routes before JSON Server router
-server.get('/echo', (req, res) => {
-  res.jsonp(req.query)
-})
-
-// To handle POST, PUT and PATCH you need to use a body-parser
-// You can use the one used by JSON Server
-server.use(jsonServer.bodyParser)
-server.use((req, res, next) => {
-  if (req.method === 'POST') {
-    req.body.createdAt = Date.now()
-  }
-  // Continue to JSON Server router
-  next()
-})
-
-// Use default router
-server.use(router)
-server.listen(3000, () => {
-  console.log('JSON Server is running')
-})
-```
-
-#### Access control example
-
-```js
-const jsonServer = require('json-server')
-const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
-
-server.use(middlewares)
-server.use((req, res, next) => {
- if (isAuthorized(req)) { // add your authorization logic here
-   next() // continue to JSON Server router
- } else {
-   res.sendStatus(401)
- }
-})
-server.use(router)
-server.listen(3000, () => {
-  console.log('JSON Server is running')
-})
-```
-#### Custom output example
-
-To modify responses, overwrite `router.render` method:
-
-```javascript
-// In this example, returned resources will be wrapped in a body property
-router.render = (req, res) => {
-  res.jsonp({
-    body: res.locals.data
-  })
-}
-```
-
-You can set your own status code for the response:
-
-
-```javascript
-// In this example we simulate a server side error response
-router.render = (req, res) => {
-  res.status(500).jsonp({
-    error: "error message here"
-  })
-}
-```
-
-#### Rewriter example
-
-To add rewrite rules, use `jsonServer.rewriter()`:
-
-```javascript
-// Add this before server.use(router)
-server.use(jsonServer.rewriter({
-  '/api/*': '/$1',
-  '/blog/:resource/:id/show': '/:resource/:id'
-}))
-```
-
-#### Mounting JSON Server on another endpoint example
-
-Alternatively, you can also mount the router on `/api`.
-
-```javascript
-server.use('/api', router)
-```
-
-#### API
-
-__`jsonServer.create()`__
-
-Returns an Express server.
-
-__`jsonServer.defaults([options])`__
-
-Returns middlewares used by JSON Server.
-
-* options
-  * `static` path to static files
-  * `logger` enable logger middleware (default: true)
-  * `bodyParser` enable body-parser middleware (default: true)
-  * `noCors` disable CORS (default: false)
-  * `readOnly` accept only GET requests (default: false)
-
-__`jsonServer.router([path|object])`__
-
-Returns JSON Server router.
-
-### Deployment
-
-You can deploy JSON Server. For example, [JSONPlaceholder](http://jsonplaceholder.typicode.com) is an online fake API powered by JSON Server and running on Heroku.
-
-## Links
-
-### Video
-
-* [Creating Demo APIs with json-server on egghead.io](https://egghead.io/lessons/nodejs-creating-demo-apis-with-json-server)
-
-### Articles
-
-* [Node Module Of The Week - json-server](http://nmotw.in/json-server/)
-* [ng-admin: Add an AngularJS admin GUI to any RESTful API](http://marmelab.com/blog/2014/09/15/easy-backend-for-your-restful-api.html)
-* [Fast prototyping using Restangular and Json-server](https://glebbahmutov.com/blog/fast-prototyping-restangular-and-json-server/)
-* [Create a Mock REST API in Seconds for Prototyping your Frontend](https://coligo.io/create-mock-rest-api-with-json-server/)
-* [No API? No Problem! Rapid Development via Mock APIs](https://medium.com/@housecor/rapid-development-via-mock-apis-e559087be066#.93d7w8oro)
-* [Zero Code REST With json-server](https://dzone.com/articles/zero-code-rest-with-json-server)
-
-### Third-party tools
-
-* [Grunt JSON Server](https://github.com/tfiwm/grunt-json-server)
-* [Docker JSON Server](https://github.com/clue/docker-json-server)
-* [JSON Server GUI](https://github.com/naholyr/json-server-gui)
-* [JSON file generator](https://github.com/dfsq/json-server-init)
-* [JSON Server extension](https://github.com/maty21/json-server-extension)
+The Go port demonstrates significantly higher performance compared to the original Node.js version, with the version without access logging being approximately 13.7 times faster in terms of requests per second.
 
 ## License
 
 MIT
-
-[Supporters](https://thanks.typicode.com) ✨
